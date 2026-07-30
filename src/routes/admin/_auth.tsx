@@ -17,7 +17,7 @@ import { SearchBar } from "@/components/nav-sidebar/search-bar";
 import { UserNav } from "@/components/nav-sidebar/user-nav";
 import Notifications from "@/components/nav-sidebar/notifications";
 
-export const Route = createFileRoute("/_auth")({
+export const Route = createFileRoute("/admin/_auth")({
   component: AuthLayout,
 });
 

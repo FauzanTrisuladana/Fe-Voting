@@ -10,7 +10,7 @@ import { DashboardBarChart } from "@/components/dashboard/dashboard-bar-chart";
 import { DashboardMultiLineChart } from "@/components/dashboard/dashboard-multi-line-chart";
 import { DashboardMultiBarChart } from "@/components/dashboard/dashboard-multi-bar-chart";
 
-export const Route = createFileRoute("/_auth/dashboard")({
+export const Route = createFileRoute("/admin/_auth/dashboard")({
   component: RouteComponent,
 });
 

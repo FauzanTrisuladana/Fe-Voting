@@ -30,7 +30,7 @@ const usersSearchSchema = z.object({
   status: z.array(z.string()).catch(["Aktif", "Pending", "Tidak Aktif"]),
 });
 
-export const Route = createFileRoute("/_auth/users")({
+export const Route = createFileRoute("/admin/_auth/users")({
   validateSearch: usersSearchSchema,
   component: RouteComponent,
 });

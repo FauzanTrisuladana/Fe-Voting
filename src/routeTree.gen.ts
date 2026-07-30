@@ -10,18 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as VotesRouteImport } from './routes/_votes'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
-import { Route as AuthUsersRouteImport } from './routes/_auth/users'
+import { Route as VotesVoteRouteImport } from './routes/_votes/vote'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminAuthRouteImport } from './routes/admin/_auth'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminAuthDashboardRouteImport } from './routes/admin/_auth/dashboard'
+import { Route as AdminAuthUsersRouteImport } from './routes/admin/_auth/users'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
+const VotesRoute = VotesRouteImport.update({
+  id: '/_votes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -29,50 +33,108 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthDashboardRoute = AuthDashboardRouteImport.update({
+const VotesVoteRoute = VotesVoteRouteImport.update({
+  id: '/vote',
+  path: '/vote',
+  getParentRoute: () => VotesRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAuthRoute = AdminAuthRouteImport.update({
+  id: '/admin/_auth',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAuthDashboardRoute = AdminAuthDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => AdminAuthRoute,
 } as any)
-const AuthUsersRoute = AuthUsersRouteImport.update({
+const AdminAuthUsersRoute = AdminAuthUsersRouteImport.update({
   id: '/users',
   path: '/users',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => AdminAuthRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/dashboard': typeof AuthDashboardRoute
-  '/users': typeof AuthUsersRoute
+  '/vote': typeof VotesVoteRoute
+  '/admin': typeof AdminAuthRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/dashboard': typeof AdminAuthDashboardRoute
+  '/admin/users': typeof AdminAuthUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/dashboard': typeof AuthDashboardRoute
-  '/users': typeof AuthUsersRoute
+  '/vote': typeof VotesVoteRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/dashboard': typeof AdminAuthDashboardRoute
+  '/admin/users': typeof AdminAuthUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_auth': typeof AuthRouteWithChildren
+  '/_votes': typeof VotesRouteWithChildren
   '/login': typeof LoginRoute
-  '/_auth/dashboard': typeof AuthDashboardRoute
-  '/_auth/users': typeof AuthUsersRoute
+  '/_votes/vote': typeof VotesVoteRoute
+  '/admin/_auth': typeof AdminAuthRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/_auth/dashboard': typeof AdminAuthDashboardRoute
+  '/admin/_auth/users': typeof AdminAuthUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/dashboard' | '/users'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/vote'
+    | '/admin'
+    | '/admin/login'
+    | '/admin/'
+    | '/admin/dashboard'
+    | '/admin/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/dashboard' | '/users'
+  to:
+    | '/'
+    | '/login'
+    | '/vote'
+    | '/admin'
+    | '/admin/login'
+    | '/admin/dashboard'
+    | '/admin/users'
   id:
-    '__root__' | '/' | '/_auth' | '/login' | '/_auth/dashboard' | '/_auth/users'
+    | '__root__'
+    | '/'
+    | '/_votes'
+    | '/login'
+    | '/_votes/vote'
+    | '/admin/_auth'
+    | '/admin/login'
+    | '/admin/'
+    | '/admin/_auth/dashboard'
+    | '/admin/_auth/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRouteWithChildren
+  VotesRoute: typeof VotesRouteWithChildren
   LoginRoute: typeof LoginRoute
+  AdminAuthRoute: typeof AdminAuthRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -84,11 +146,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth': {
-      id: '/_auth'
+    '/_votes': {
+      id: '/_votes'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthRouteImport
+      preLoaderRoute: typeof VotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -98,39 +160,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/dashboard': {
-      id: '/_auth/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthDashboardRouteImport
-      parentRoute: typeof AuthRoute
+    '/_votes/vote': {
+      id: '/_votes/vote'
+      path: '/vote'
+      fullPath: '/vote'
+      preLoaderRoute: typeof VotesVoteRouteImport
+      parentRoute: typeof VotesRoute
     }
-    '/_auth/users': {
-      id: '/_auth/users'
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/_auth': {
+      id: '/admin/_auth'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/_auth/dashboard': {
+      id: '/admin/_auth/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminAuthDashboardRouteImport
+      parentRoute: typeof AdminAuthRoute
+    }
+    '/admin/_auth/users': {
+      id: '/admin/_auth/users'
       path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof AuthUsersRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminAuthUsersRouteImport
+      parentRoute: typeof AdminAuthRoute
     }
   }
 }
 
-interface AuthRouteChildren {
-  AuthDashboardRoute: typeof AuthDashboardRoute
-  AuthUsersRoute: typeof AuthUsersRoute
+interface VotesRouteChildren {
+  VotesVoteRoute: typeof VotesVoteRoute
 }
 
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthDashboardRoute: AuthDashboardRoute,
-  AuthUsersRoute: AuthUsersRoute,
+const VotesRouteChildren: VotesRouteChildren = {
+  VotesVoteRoute: VotesVoteRoute,
 }
 
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+const VotesRouteWithChildren = VotesRoute._addFileChildren(VotesRouteChildren)
+
+interface AdminAuthRouteChildren {
+  AdminAuthDashboardRoute: typeof AdminAuthDashboardRoute
+  AdminAuthUsersRoute: typeof AdminAuthUsersRoute
+}
+
+const AdminAuthRouteChildren: AdminAuthRouteChildren = {
+  AdminAuthDashboardRoute: AdminAuthDashboardRoute,
+  AdminAuthUsersRoute: AdminAuthUsersRoute,
+}
+
+const AdminAuthRouteWithChildren = AdminAuthRoute._addFileChildren(
+  AdminAuthRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthRoute: AuthRouteWithChildren,
+  VotesRoute: VotesRouteWithChildren,
   LoginRoute: LoginRoute,
+  AdminAuthRoute: AdminAuthRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

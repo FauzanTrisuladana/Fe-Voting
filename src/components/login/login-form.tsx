@@ -45,7 +45,7 @@ export function LoginForm({
     await queryClient.refetchQueries({
       queryKey: ["profile"],
     });
-    router.navigate({ to: "/dashboard", replace: true });
+    router.navigate({ to: "/admin/dashboard", replace: true });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

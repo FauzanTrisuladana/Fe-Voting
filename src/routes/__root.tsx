@@ -28,7 +28,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "Nogotirto 5 - Aplikasi Akuntansi",
+        title: "Nogotirto 5 - Penilaian Lomba Masak",
       },
     ],
     links: [
@@ -50,7 +50,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <p className="text-muted-foreground">
           Halaman yang Anda cari tidak ditemukan.
         </p>
-        <Link to="/dashboard" className="text-blue-600 hover:underline">
+        <Link to="/vote" className="text-blue-600 hover:underline">
           Kembali ke Dashboard
         </Link>
       </div>
