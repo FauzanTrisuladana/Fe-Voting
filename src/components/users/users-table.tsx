@@ -5,7 +5,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Power, Trash2 } from "lucide-react";
-import { UserActivateDialog } from "./user-activate-dialog";
 import { UserDeleteDialog } from "./user-delete-dialog";
 import { UserDeactivateDialog } from "./user-deactivate-dialog";
 import type { ColumnDef, SortingState } from "@tanstack/react-table";
@@ -63,8 +62,6 @@ export function UsersTable({
   );
   const [userToDeactivate, setUserToDeactivate] =
     React.useState<UserRecord | null>(null);
-  const [userToActivate, setUserToActivate] =
-    React.useState<UserRecord | null>(null);
 
   const handlePageChange = (newPageIndex: number) => {
     if (typeof onPageChange === "function") onPageChange(newPageIndex);
@@ -77,8 +74,10 @@ export function UsersTable({
   const handleToggleStatus = React.useCallback(
     async (user: UserRecord, nextActive: boolean) => {
       if (nextActive) {
-        // aktivasi munculkan dialog konfirmasi
-        setUserToActivate(user);
+        // aktivasi langsung tanpa dialog konfirmasi
+        if (typeof onToggleStatus === "function") {
+          await onToggleStatus(user.id, true);
+        }
       } else {
         // non-aktifkan munculkan dialog konfirmasi
         setUserToDeactivate(user);
@@ -277,18 +276,6 @@ export function UsersTable({
         user={userToDelete}
         onConfirm={async (id) => {
           if (typeof onDelete === "function") return await onDelete(id);
-          return false;
-        }}
-      />
-
-      <UserActivateDialog
-        open={!!userToActivate}
-        onOpenChange={(isOpen) => !isOpen && setUserToActivate(null)}
-        user={userToActivate}
-        onConfirm={async (id) => {
-          if (typeof onToggleStatus === "function") {
-            return await onToggleStatus(id, true);
-          }
           return false;
         }}
       />
