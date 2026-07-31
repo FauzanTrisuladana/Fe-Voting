@@ -19,6 +19,8 @@ interface VotingConfirmDialogProps {
   onOpenChange: (open: boolean) => void;
   selectedOption: VoteOption | null;
   onConfirm: () => Promise<boolean> | boolean;
+  onCancel?: () => void;
+  isLoading?: boolean;
 }
 
 export function VotingConfirmDialog({
@@ -26,6 +28,8 @@ export function VotingConfirmDialog({
   onOpenChange,
   selectedOption,
   onConfirm,
+  onCancel,
+  isLoading,
 }: VotingConfirmDialogProps) {
   const [isConfirming, setIsConfirming] = useState(false);
 
@@ -60,7 +64,12 @@ export function VotingConfirmDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
-            disabled={isConfirming}
+            disabled={isConfirming || isLoading}
+            onClick={(e) => {
+              e.preventDefault();
+              onCancel?.();
+              onOpenChange(false);
+            }}
             className="md:w-[50%] w-full bg-slate-900 text-white hover:text-white hover:bg-slate-800 h-12 cursor-pointer"
           >
             Batal
@@ -71,7 +80,7 @@ export function VotingConfirmDialog({
               e.preventDefault();
               handleConfirm();
             }}
-            disabled={isConfirming}
+            disabled={isConfirming || isLoading}
           >
             {isConfirming ? (
               <>

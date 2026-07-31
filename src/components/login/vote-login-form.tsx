@@ -5,7 +5,7 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
-import { login } from "@/services/authService";
+import { checkToken } from "@/services/voteService";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +29,7 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // const loginFn = useServerFn(login);
+  const checkTokenFn = useServerFn(checkToken);
 
   const handleAuthSuccess = async () => {
     await queryClient.refetchQueries({
@@ -43,20 +43,34 @@ export function LoginForm({
     setIsLoading(true);
     setError("");
 
-    // try {
-    //   await loginFn({ data: { email, password } });
-    //   toast.success("Login berhasil!");
-    //   handleAuthSuccess();
-    // } catch (err: any) {
-    //   const msg =
-    //     err?.response?.data?.message ||
-    //     err?.message ||
-    //     "Login gagal. Cek email/password.";
-    //   setError(msg);
-    //   toast.error(msg);
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    try {
+      const result = await checkTokenFn({ data: { code: kode } });
+
+      if (!result) {
+        setError("Respons server tidak valid.");
+        toast.error("Respons server tidak valid.");
+        return;
+      }
+
+      if (result.data.already_vote) {
+        setError("Kode sudah digunakan untuk voting.");
+        toast.error("Kode sudah digunakan untuk voting.");
+        return;
+      }
+
+      localStorage.setItem("vote_token", kode);
+      toast.success("Login berhasil silahkan pilih nasi goreng terbaik");
+      handleAuthSuccess();
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Kode tidak valid. Cek kode voting.";
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

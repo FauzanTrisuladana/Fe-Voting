@@ -1,6 +1,9 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Card,
   CardContent,
@@ -9,6 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { VotingConfirmDialog } from "@/components/voting/voting-confirm-dialog";
+import { submitVote } from "@/services/voteService";
+import type { VoteOption } from "@/components/voting/types";
 
 const votingOptions = [
   { id: "A", title: "Pilih jika anda menyukai Nasi Goreng A" },
@@ -22,11 +27,20 @@ export function VotingCard({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+  const submitVoteFn = useServerFn(submitVote);
+
   const [selected, setSelected] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const selectedOption = votingOptions.find((o) => o.id === selected) ?? null;
+  // Redirect to login if no token in localStorage
+  useEffect(() => {
+    const token = localStorage.getItem("vote_token");
+    if (!token) {
+      router.navigate({ to: "/login", replace: true });
+    }
+  }, [router]);
 
   const handleSubmitClick = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,12 +48,41 @@ export function VotingCard({
     setDialogOpen(true);
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (): Promise<boolean> => {
     setIsSubmitting(true);
-    // TODO: submit vote logic
-    await new Promise((r) => setTimeout(r, 1200)); // placeholder delay
-    setIsSubmitting(false);
-    setDialogOpen(false);
+    try {
+      const token = localStorage.getItem("vote_token");
+      if (!token) {
+        toast.error("Sesi voting tidak valid. Silakan login kembali.");
+        router.navigate({ to: "/login", replace: true });
+        return false;
+      }
+
+      await submitVoteFn({
+        data: {
+          voter_code: token,
+          vote_choice: selected as VoteOption,
+        },
+      });
+
+      toast.success(
+        "Terimakasih sudah memilih, pilihan anda berhasil tersimpan",
+      );
+      localStorage.removeItem("vote_token");
+      setDialogOpen(false);
+      setSelected(null);
+      router.navigate({ to: "/login", replace: true });
+      return true;
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Gagal menyimpan vote. Coba lagi.";
+      toast.error(msg);
+      return false;
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -136,7 +179,8 @@ export function VotingCard({
       {/* Confirm Dialog */}
       <VotingConfirmDialog
         open={dialogOpen}
-        option={selectedOption}
+        onOpenChange={setDialogOpen}
+        selectedOption={selected as VoteOption | null}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
         isLoading={isSubmitting}

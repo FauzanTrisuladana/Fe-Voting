@@ -77,7 +77,7 @@ export function AppSidebar({
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-bold text-base">
-                  Keuangan Pemuda
+                  Voting System
                 </span>
                 <span className="truncate font-bold text-base">
                   Perumahan Nogotirto V
