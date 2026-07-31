@@ -101,28 +101,27 @@ export function AppSidebar({
                       <div className="h-12 w-full rounded-lg bg-slate-100 animate-pulse" />
                     </SidebarMenuItem>
                   ))
-                : navItems
-                    .map((item) => {
-                      const isActive =
-                        pathname === item.url ||
-                        pathname.startsWith(`${item.url}/`);
+                : navItems.map((item) => {
+                    const isActive =
+                      pathname === item.url ||
+                      pathname.startsWith(`${item.url}/`);
 
-                      return (
-                        <SidebarMenuItem key={item.title}>
-                          <SidebarMenuButton
-                            asChild
-                            tooltip={item.title}
-                            isActive={isActive}
-                            className="h-12 font-medium hover:bg-slate-100 data-[active=true]:bg-slate-900 data-[active=true]:text-white data-[active=true]:hover:bg-slate-800 data-[active=true]:hover:text-white"
-                          >
-                            <Link to={item.url}>
-                              <item.icon />
-                              <span>{item.title}</span>
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      );
-                    })}
+                    return (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton
+                          asChild
+                          tooltip={item.title}
+                          isActive={isActive}
+                          className="h-12 font-medium hover:bg-slate-100 data-[active=true]:bg-slate-900 data-[active=true]:text-white data-[active=true]:hover:bg-slate-800 data-[active=true]:hover:text-white"
+                        >
+                          <Link to={item.url}>
+                            <item.icon />
+                            <span>{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -136,7 +135,7 @@ export function AppSidebar({
               size="lg"
               className="group-data-[collapsible=icon]:p-1! hover:bg-slate-100"
             >
-              <Link to="/dashboard">
+              <Link to="/admin/dashboard">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border">
                   <Avatar className="h-full w-full">
                     <AvatarImage

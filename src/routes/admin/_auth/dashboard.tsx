@@ -31,9 +31,9 @@ function RouteComponent() {
 
   const data = dashboardQuery.data;
   const summary = data?.summary;
-  const saldoDaily = data?.data?.saldo_daily ?? [];
-  const saldoPerAkun = data?.data?.saldo_per_akun ?? [];
-  const rekonsiliasi = data?.data?.rekonsiliasi ?? [];
+  const saldoDaily = data?.data.saldo_daily ?? [];
+  const saldoPerAkun = data?.data.saldo_per_akun ?? [];
+  const rekonsiliasi = data?.data.rekonsiliasi ?? [];
 
   return (
     <>

@@ -9,7 +9,6 @@ export type UserRecord = {
   id: number;
   name: string;
   email: string;
-  role: string;
   status: UserStatus;
   profile_image: string | null;
   has_password: boolean;
@@ -37,18 +36,12 @@ export type IndexUserParams = {
   page?: number;
   per_page?: number;
   search?: string;
-  role?: Array<string>;
   status?: Array<string>;
 };
 
 export type StoreUserPayload = {
   nama: string;
   email: string;
-  role: string;
-};
-
-export type UpdateUserPayload = {
-  role: string;
 };
 
 // Get list of users
@@ -71,20 +64,6 @@ export const createUser = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const response = await api.post<UserResponse>("/user", data);
-      return response.data;
-    } catch (error) {
-      handleApiError(error);
-    }
-  });
-
-// Update user
-export const updateUser = createServerFn({ method: "POST" })
-  .validator((data: UpdateUserPayload & { id: number }) => data)
-  .handler(async ({ data }) => {
-    try {
-      const response = await api.put<UserResponse>(`/user/${data.id}`, {
-        role: data.role,
-      });
       return response.data;
     } catch (error) {
       handleApiError(error);

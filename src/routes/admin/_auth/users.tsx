@@ -7,7 +7,6 @@ import { Plus } from "lucide-react";
 import { FilterBar } from "@/components/users/filter-bar-user";
 import { useServerFn } from "@tanstack/react-start";
 import type { UserFormErrors } from "@/components/users/types";
-import { ROLE_OPTIONS } from "@/components/users/types";
 
 import { UserAddDialog } from "@/components/users/user-add-dialog";
 import { UsersTable } from "@/components/users/users-table";
@@ -18,7 +17,6 @@ import {
   deleteUser,
   getUsers,
   toggleUserStatus,
-  updateUser,
 } from "@/services/userService";
 
 // ─── Search Params Schema ─────────────────────────────────────────────────────
@@ -26,7 +24,6 @@ const usersSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   per_page: z.number().int().positive().catch(10),
   search: z.string().optional(),
-  role: z.array(z.string()).catch(ROLE_OPTIONS.map((o) => o.name)),
   status: z.array(z.string()).catch(["Aktif", "Pending", "Tidak Aktif"]),
 });
 
@@ -41,18 +38,11 @@ function RouteComponent() {
   const search = Route.useSearch();
   const queryClient = useQueryClient();
 
-  const {
-    page,
-    per_page,
-    search: searchQuery,
-    role: roleFilter,
-    status: statusFilter,
-  } = search;
+  const { page, per_page, search: searchQuery, status: statusFilter } = search;
 
   // API query
   const getUsersFn = useServerFn(getUsers);
   const createUserFn = useServerFn(createUser);
-  const updateUserFn = useServerFn(updateUser);
   const deleteUserFn = useServerFn(deleteUser);
   const toggleUserStatusFn = useServerFn(toggleUserStatus);
 
@@ -63,7 +53,6 @@ function RouteComponent() {
         page,
         per_page,
         search: searchQuery,
-        role: roleFilter,
         status: statusFilter,
       },
     ],
@@ -74,7 +63,6 @@ function RouteComponent() {
             page,
             per_page,
             search: searchQuery,
-            role: roleFilter,
             status: statusFilter,
           },
         },
@@ -97,11 +85,10 @@ function RouteComponent() {
 
   const [open, setOpen] = useState(false);
   const [addErrors, setAddErrors] = useState<UserFormErrors>(null);
-  const [editErrors, setEditErrors] = useState<UserFormErrors>(null);
 
   const handleSearchChange = (value: string) => {
     navigate({
-      to: "/users",
+      to: "/admin/users",
       search: (prev: any) => ({
         ...prev,
         search: value === "" ? undefined : value,
@@ -111,21 +98,9 @@ function RouteComponent() {
     });
   };
 
-  const handleRoleFilterChange = (selectedRoles: Array<string>) => {
-    navigate({
-      to: "/users",
-      search: (prev: any) => ({
-        ...prev,
-        role: selectedRoles,
-        page: 1,
-      }),
-      replace: true,
-    });
-  };
-
   const handleStatusFilterChange = (selectedStatuses: Array<string>) => {
     navigate({
-      to: "/users",
+      to: "/admin/users",
       search: (prev: any) => ({
         ...prev,
         status: selectedStatuses,
@@ -138,12 +113,11 @@ function RouteComponent() {
   const handleAdd = async (payload: {
     name: string;
     email: string;
-    role: string;
   }): Promise<boolean> => {
     setAddErrors(null);
     try {
       const result = await createUserFn({
-        data: { nama: payload.name, email: payload.email, role: payload.role },
+        data: { nama: payload.name, email: payload.email },
       });
       toast.success(result?.message || "User berhasil ditambahkan");
       queryClient.invalidateQueries();
@@ -156,31 +130,6 @@ function RouteComponent() {
         error?.response?.data?.message ||
         error?.message ||
         "Gagal menambahkan user";
-      toast.error(msg);
-      return false;
-    }
-  };
-
-  const handleEdit = async ({
-    id,
-    role,
-  }: {
-    id: number;
-    role: string;
-  }): Promise<boolean> => {
-    setEditErrors(null);
-    try {
-      const result = await updateUserFn({ data: { id, role } });
-      toast.success(result?.message || "User berhasil diperbarui");
-      queryClient.invalidateQueries();
-      return true;
-    } catch (error: any) {
-      const errors = error?.response?.data?.errors as UserFormErrors;
-      setEditErrors(errors);
-      const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Gagal memperbarui user";
       toast.error(msg);
       return false;
     }
@@ -244,7 +193,6 @@ function RouteComponent() {
         }}
         onCreate={handleAdd}
         errors={addErrors}
-        roleOptions={ROLE_OPTIONS}
       />
 
       <SearchBar
@@ -255,11 +203,7 @@ function RouteComponent() {
       />
 
       <FilterBar
-        roleOptions={ROLE_OPTIONS}
-        onRoleFilterChange={handleRoleFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
-        defaultSelectedRoles={roleFilter}
-        defaultSelectedStatuses={statusFilter}
         isLoading={usersQuery.isLoading}
         className="mb-4"
       />
@@ -270,7 +214,7 @@ function RouteComponent() {
         pagination={pagination}
         onPageChange={(newPageIndex: number) => {
           navigate({
-            to: "/users",
+            to: "/admin/users",
             search: (prev: any) => ({
               ...prev,
               page: newPageIndex + 1,
@@ -280,7 +224,7 @@ function RouteComponent() {
         }}
         onPageSizeChange={(newPageSize: number) => {
           navigate({
-            to: "/users",
+            to: "/admin/users",
             search: (prev: any) => ({
               ...prev,
               per_page: newPageSize,
@@ -289,11 +233,8 @@ function RouteComponent() {
             replace: true,
           });
         }}
-        onUpdate={handleEdit}
         onDelete={handleDelete}
         onToggleStatus={handleToggleStatus}
-        editErrors={editErrors}
-        roleOptions={ROLE_OPTIONS}
       />
     </>
   );

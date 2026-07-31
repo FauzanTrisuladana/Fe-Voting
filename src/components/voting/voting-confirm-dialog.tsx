@@ -50,8 +50,8 @@ export function VotingConfirmDialog({
             <AlertDialogTitle>Konfirmasi Pilihan</AlertDialogTitle>
           </div>
           <AlertDialogDescription>
-            Anda telah memilih <strong>{selectedOption}</strong>. Apakah
-            Anda yakin dengan pilihan ini?
+            Anda telah memilih <strong>{selectedOption}</strong>. Apakah Anda
+            yakin dengan pilihan ini?
             <br />
             <span className="text-rose-600 font-medium">
               Perhatian: Data voting tidak dapat diubah setelah dikonfirmasi.

@@ -4,12 +4,11 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Pencil, Power, Trash2 } from "lucide-react";
+import { Power, Trash2 } from "lucide-react";
 import { UserDeleteDialog } from "./user-delete-dialog";
-import { UserEditDialog } from "./user-edit-dialog";
 import { UserDeactivateDialog } from "./user-deactivate-dialog";
 import type { ColumnDef, SortingState } from "@tanstack/react-table";
-import type { UserFormErrors, UserRecord } from "./types";
+import type { UserRecord } from "./types";
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -38,22 +37,14 @@ interface UsersTableProps {
   };
   canManage?: boolean;
   canDelete?: boolean;
-  editErrors?: UserFormErrors;
   onPageChange: (newPageIndex: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
-  onUpdate?: (payload: {
-    id: number;
-    role: string;
-  }) => Promise<boolean> | boolean;
   onDelete?: (id: number) => Promise<boolean> | boolean;
   onToggleStatus?: (
     id: number,
     nextActive: boolean,
   ) => Promise<boolean> | boolean;
-  roleOptions?: Array<{ id: number; name: string }>;
 }
-
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export function UsersTable({
   data,
@@ -61,18 +52,14 @@ export function UsersTable({
   pagination,
   onPageChange,
   onPageSizeChange,
-  onUpdate,
   onDelete,
   onToggleStatus,
-  roleOptions,
-  editErrors,
 }: UsersTableProps) {
   const [sorting] = React.useState<SortingState>([]);
 
   const [userToDelete, setUserToDelete] = React.useState<UserRecord | null>(
     null,
   );
-  const [userToEdit, setUserToEdit] = React.useState<UserRecord | null>(null);
   const [userToDeactivate, setUserToDeactivate] =
     React.useState<UserRecord | null>(null);
 
@@ -135,26 +122,6 @@ export function UsersTable({
         ),
       },
       {
-        accessorKey: "role",
-        header: "Role",
-        cell: ({ row }) => {
-          const role = row.original.role || "-";
-          const isBiasa = role === "biasa";
-          return (
-            <Badge
-              variant="outline"
-              className={`cursor-default rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
-                isBiasa
-                  ? "bg-rose-50 text-rose-600 border-rose-200"
-                  : "bg-amber-50 text-amber-600 border-amber-200"
-              }`}
-            >
-              {capitalize(role)}
-            </Badge>
-          );
-        },
-      },
-      {
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => {
@@ -196,16 +163,6 @@ export function UsersTable({
                 title={isActive ? "Non-aktifkan" : "Aktifkan"}
               >
                 <Power className="h-4 w-4" />
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-amber-500 hover:text-amber-600 hover:bg-amber-50 cursor-pointer"
-                onClick={() => setUserToEdit(row.original)}
-                title="Edit"
-              >
-                <Pencil className="h-4 w-4" />
               </Button>
 
               <Button
@@ -312,18 +269,6 @@ export function UsersTable({
           />
         </CardContent>
       </Card>
-
-      <UserEditDialog
-        open={!!userToEdit}
-        onOpenChange={(isOpen) => !isOpen && setUserToEdit(null)}
-        user={userToEdit}
-        onSave={async (payload) => {
-          if (typeof onUpdate === "function") return await onUpdate(payload);
-          return false;
-        }}
-        roleOptions={roleOptions ?? []}
-        errors={editErrors}
-      />
 
       <UserDeleteDialog
         open={!!userToDelete}

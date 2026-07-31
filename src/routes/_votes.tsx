@@ -1,8 +1,4 @@
-import {
-  Outlet,
-  createFileRoute,
-  useRouter,
-} from "@tanstack/react-router";
+import { Outlet, createFileRoute, useRouter } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_votes")({
   component: AuthLayout,
@@ -24,7 +20,5 @@ function AuthLayout() {
   //   return null;
   // }
 
-  return (
-    <Outlet />
-  );
+  return <Outlet />;
 }

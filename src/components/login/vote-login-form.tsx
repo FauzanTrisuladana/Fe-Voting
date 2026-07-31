@@ -15,11 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 export function LoginForm({
@@ -85,7 +81,8 @@ export function LoginForm({
             Penilaian Lomba Nasi Goreng
           </CardTitle>
           <CardDescription className="text-sm">
-            Silakan Masukkan kode yang diberikan panitias untuk masuk ke sistem. Jika belum memiliki kode, hubungi panitia.
+            Silakan Masukkan kode yang diberikan panitias untuk masuk ke sistem.
+            Jika belum memiliki kode, hubungi panitia.
           </CardDescription>
         </CardHeader>
         <CardContent>

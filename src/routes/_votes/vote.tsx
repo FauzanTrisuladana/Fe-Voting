@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { VotingCard } from '@/components/voting/voting'
+import { createFileRoute } from "@tanstack/react-router";
+import { VotingCard } from "@/components/voting/voting";
 
-export const Route = createFileRoute('/_votes/vote')({
+export const Route = createFileRoute("/_votes/vote")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   return (
@@ -19,5 +19,5 @@ function RouteComponent() {
         <VotingCard />
       </div>
     </div>
-  )
+  );
 }

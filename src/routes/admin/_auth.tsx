@@ -33,7 +33,7 @@ function AuthLayout() {
 
   useEffect(() => {
     if (!isAuthorized) {
-      router.navigate({ to: "/login", replace: true });
+      router.navigate({ to: "/admin/login", replace: true });
     }
   }, [isAuthorized, router]);
 

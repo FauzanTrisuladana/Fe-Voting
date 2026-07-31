@@ -6,7 +6,6 @@ import type { UserFormErrors } from "./types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogBody,
@@ -25,10 +24,8 @@ type UserAddDialogProps = {
   onCreate: (payload: {
     name: string;
     email: string;
-    role: string;
   }) => Promise<boolean> | boolean;
   errors?: UserFormErrors;
-  roleOptions: Array<{ id: number; name: string }>;
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -37,7 +34,6 @@ export function UserAddDialog({
   onOpenChange,
   onCreate,
   errors: _errors,
-  roleOptions,
 }: UserAddDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled =
@@ -47,16 +43,13 @@ export function UserAddDialog({
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [roleId, setRoleId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFormValid =
-    name.trim() !== "" && email.trim() !== "" && roleId !== "";
+  const isFormValid = name.trim() !== "" && email.trim() !== "";
 
   const resetForm = () => {
     setName("");
     setEmail("");
-    setRoleId("");
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -68,7 +61,6 @@ export function UserAddDialog({
       const success = await onCreate({
         name: name.trim(),
         email: email.trim(),
-        role: roleId,
       });
       if (success) {
         setDialogOpen(false);
@@ -89,7 +81,6 @@ export function UserAddDialog({
   const generalError = _errors?.general?.[0];
   const nameError = _errors?.name?.[0];
   const emailError = _errors?.email?.[0];
-  const roleError = _errors?.role_id?.[0] ?? _errors?.role?.[0];
 
   return (
     <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
@@ -139,36 +130,6 @@ export function UserAddDialog({
               />
               {emailError ? (
                 <p className="text-sm text-destructive">{emailError}</p>
-              ) : null}
-            </div>
-
-            {/* Role */}
-            <div className="grid gap-2">
-              <Label className="text-slate-600 font-medium">Role*</Label>
-              <div className="flex gap-3">
-                {roleOptions.map((role) => {
-                  const isSelected = roleId === role.name;
-                  const isBiasa = role.name === "biasa";
-                  return (
-                    <Badge
-                      key={role.id}
-                      variant="outline"
-                      className={`cursor-pointer rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
-                        isSelected
-                          ? isBiasa
-                            ? "bg-rose-50 text-rose-600 border-rose-200"
-                            : "bg-amber-50 text-amber-600 border-amber-200"
-                          : "bg-gray-50 text-gray-500 border-gray-200"
-                      }`}
-                      onClick={() => setRoleId(role.name)}
-                    >
-                      {role.name === "bendahara" ? "Bendahara" : "Biasa"}
-                    </Badge>
-                  );
-                })}
-              </div>
-              {roleError ? (
-                <p className="text-sm text-destructive">{roleError}</p>
               ) : null}
             </div>
 

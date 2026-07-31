@@ -1,17 +1,14 @@
-import {
-  House,
-  Users,
-} from "lucide-react";
+import { House, Users } from "lucide-react";
 
 export const navItems = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/admin/dashboard",
     icon: House,
   },
   {
     title: "User",
-    url: "/users",
+    url: "/admin/users",
     icon: Users,
   },
 ];
