@@ -114,11 +114,11 @@ export function LoginForm({
             </div>
           </div>
           <CardTitle className="text-2xl">
-            Keuangan Pemuda Nogotirto V
+            Admin Login
           </CardTitle>
           <CardDescription className="text-sm">
             Silakan login untuk mengakses dashboard keuangan. Gunakan akun yang
-            telah terdaftar atau daftar dengan AkunGoogle.
+            telah terdaftar atau masuk dengan AkunGoogle.
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -4,6 +4,7 @@ import { useRouter } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
+import { LogOut } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -49,6 +50,12 @@ export function VotingCard({
       router.navigate({ to: "/login", replace: true });
     }
   }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("vote_token");
+    toast.success("Berhasil keluar dari sesi.");
+    router.navigate({ to: "/login", replace: true });
+  };
 
   const handleSubmitClick = (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,17 +109,27 @@ export function VotingCard({
     <>
       <div className={cn("flex flex-col gap-6 w-full", className)} {...props}>
         <Card className="w-full">
-          <CardHeader className="pb-4">
-            <CardTitle
-              className="text-3xl font-bold tracking-tight"
-              style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+          <CardHeader className="pb-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div className="flex flex-col gap-1">
+              <CardTitle
+                className="text-3xl font-bold tracking-tight"
+                style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+              >
+                Juara Favorit Warga
+              </CardTitle>
+              <CardDescription className="text-base text-muted-foreground leading-relaxed mt-1">
+                Silakan pilih nasi goreng favorit Anda berdasarkan kriteria Lomba
+                Nasi Goreng Perumahan Nogotirto V. Pilih satu opsi di bawah.
+              </CardDescription>
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="sm:self-start self-end text-sm font-semibold text-destructive border border-destructive/30 rounded-lg px-3.5 py-2 hover:bg-destructive/10 hover:border-destructive transition-colors cursor-pointer shrink-0 flex items-center gap-1.5"
             >
-              Juara Favorit Warga
-            </CardTitle>
-            <CardDescription className="text-base text-muted-foreground leading-relaxed mt-1">
-              Silakan pilih nasi goreng favorit Anda berdasarkan kriteria Lomba
-              Nasi Goreng Perumahan Nogotirto V. Pilih satu opsi di bawah.
-            </CardDescription>
+              <LogOut className="h-4 w-4" />
+              Keluar Sesi
+            </button>
           </CardHeader>
 
           <CardContent className="pt-0">
