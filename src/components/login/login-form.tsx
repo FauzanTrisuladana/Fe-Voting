@@ -114,10 +114,10 @@ export function LoginForm({
             </div>
           </div>
           <CardTitle className="text-2xl">
-            Admin Login
+            Admin Login Penilaian Lomba Nasi Goreng
           </CardTitle>
           <CardDescription className="text-sm">
-            Silakan login untuk mengakses dashboard keuangan. Gunakan akun yang
+            Silakan login untuk mengakses halaman admin. Gunakan akun yang
             telah terdaftar atau masuk dengan AkunGoogle.
           </CardDescription>
         </CardHeader>
