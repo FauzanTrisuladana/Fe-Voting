@@ -36,7 +36,7 @@ function RouteComponent() {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <HeaderComp
           title="Dashboard"
-          description="Rekap total suara per kandidat"
+          description="Rekap total suara per Nasi Goreng"
         />
 
         <DashboardHeaderActions
