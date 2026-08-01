@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 import type { VoteOption } from "./types";
 import {
   AlertDialog,
@@ -50,16 +50,15 @@ export function VotingConfirmDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <div className="flex items-center gap-2 text-rose-600">
-            <AlertTriangle className="h-5 w-5" />
-            <AlertDialogTitle>Konfirmasi Pilihan</AlertDialogTitle>
+            <Info className="w-6 h-6 text-blue-500" />
+            <AlertDialogTitle className="text-blue-500 font-bold text-lg">
+              Konfirmasi Pilihan
+            </AlertDialogTitle>
           </div>
           <AlertDialogDescription>
-            Anda telah memilih <strong>{selectedOption}</strong>. Apakah Anda
-            yakin dengan pilihan ini?
+            Anda telah memilih <strong className="text-blue-500">{selectedOption}</strong>. Apakah Anda
+            yakin?
             <br />
-            <span className="text-rose-600 font-medium">
-              Perhatian: Data voting tidak dapat diubah setelah dikonfirmasi.
-            </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -70,17 +69,18 @@ export function VotingConfirmDialog({
               onCancel?.();
               onOpenChange(false);
             }}
-            className="md:w-[50%] w-full bg-slate-900 text-white hover:text-white hover:bg-slate-800 h-12 cursor-pointer"
+            className="md:w-[50%] w-full h-12 bg-slate-200 hover:bg-slate-100 text-slate-900 rounded-lg font-medium transition-colors cursor-pointer"
           >
             Batal
           </AlertDialogCancel>
           <AlertDialogAction
-            className="bg-rose-600 hover:bg-rose-700 md:w-[50%] w-full h-12 cursor-pointer"
+            className="md:w-[50%] w-full h-12 cursor-pointer"
             onClick={(e) => {
               e.preventDefault();
               handleConfirm();
             }}
             disabled={isConfirming || isLoading}
+            variant="green"
           >
             {isConfirming ? (
               <>
