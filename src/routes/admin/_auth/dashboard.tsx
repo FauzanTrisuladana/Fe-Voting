@@ -1,70 +1,60 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getDashboard } from "@/services/dashboardService";
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
-import { DashboardLineChart } from "@/components/dashboard/dashboard-line-chart";
-import { DashboardBarChart } from "@/components/dashboard/dashboard-bar-chart";
-import { DashboardMultiLineChart } from "@/components/dashboard/dashboard-multi-line-chart";
-import { DashboardMultiBarChart } from "@/components/dashboard/dashboard-multi-bar-chart";
+import { DashboardHeaderActions } from "@/components/dashboard/dashboard-header-actions";
+import HeaderComp from "@/components/shared/header-comp";
+
+const REFRESH_INTERVAL = 10;
 
 export const Route = createFileRoute("/admin/_auth/dashboard")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [selectedKas, setSelectedKas] = useState<string>("kas pemuda");
   const getDashboardFn = useServerFn(getDashboard);
 
   const dashboardQuery = useQuery({
-    queryKey: ["dashboard", selectedKas],
+    queryKey: ["dashboard"],
     queryFn: async () => {
-      const result = await getDashboardFn({
-        data: { params: { kas: selectedKas } },
-      });
+      const result = await getDashboardFn({ data: undefined });
       return result;
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: 1000 * REFRESH_INTERVAL,
   });
 
-  const data = dashboardQuery.data;
-  const summary = data?.summary;
-  const saldoDaily = data?.data.saldo_daily ?? [];
-  const saldoPerAkun = data?.data.saldo_per_akun ?? [];
-  const rekonsiliasi = data?.data.rekonsiliasi ?? [];
+  const handleManualRefresh = () => {
+    dashboardQuery.refetch();
+  };
+
+  const data = dashboardQuery.data?.data;
 
   return (
     <>
-      <DashboardHeader selectedKas={selectedKas} onKasChange={setSelectedKas} />
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <HeaderComp
+          title="Dashboard"
+          description="Rekap total suara per kandidat"
+        />
+
+        <DashboardHeaderActions
+          query={dashboardQuery}
+          onManualRefresh={handleManualRefresh}
+        />
+      </div>
 
       <DashboardSummaryCards
         stats={
-          summary ?? {
-            pemasukan: { total: 0, change: 0 },
-            pengeluaran: { total: 0, change: 0 },
-            totalSaldo: { total: 0 },
+          data ?? {
+            total_A: 0,
+            total_B: 0,
+            total_C: 0,
+            total_D: 0,
+            total_E: 0,
           }
         }
-        isLoading={dashboardQuery.isLoading}
-      />
-
-      <DashboardLineChart
-        chartData={saldoDaily}
-        isLoading={dashboardQuery.isLoading}
-      />
-      <DashboardBarChart
-        chartData={saldoDaily}
-        isLoading={dashboardQuery.isLoading}
-      />
-
-      <DashboardMultiLineChart
-        chartData={saldoPerAkun}
-        isLoading={dashboardQuery.isLoading}
-      />
-      <DashboardMultiBarChart
-        chartData={rekonsiliasi}
         isLoading={dashboardQuery.isLoading}
       />
     </>

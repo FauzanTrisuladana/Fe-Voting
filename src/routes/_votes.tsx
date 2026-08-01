@@ -1,11 +1,10 @@
-import { Outlet, createFileRoute, useRouter } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_votes")({
   component: AuthLayout,
 });
 
 function AuthLayout() {
-  const router = useRouter();
 
   // Autentikasi dan authorisasi dengan client-side
   // const isAuthorized = isAuthenticated();

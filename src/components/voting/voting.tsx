@@ -16,12 +16,20 @@ import { submitVote } from "@/services/voteService";
 import type { VoteOption } from "@/components/voting/types";
 
 const votingOptions = [
-  { id: "A", title: "Pilih jika anda menyukai Nasi Goreng A" },
-  { id: "B", title: "Pilih jika anda menyukai Nasi Goreng B" },
-  { id: "C", title: "Pilih jika anda menyukai Nasi Goreng C" },
-  { id: "D", title: "Pilih jika anda menyukai Nasi Goreng D" },
-  { id: "E", title: "Pilih jika anda menyukai Nasi Goreng E" },
+  { id: "A", title: "Pilih jika anda menyukai Nasi Goreng A", color: "violet" as const },
+  { id: "B", title: "Pilih jika anda menyukai Nasi Goreng B", color: "sky" as const },
+  { id: "C", title: "Pilih jika anda menyukai Nasi Goreng C", color: "emerald" as const },
+  { id: "D", title: "Pilih jika anda menyukai Nasi Goreng D", color: "amber" as const },
+  { id: "E", title: "Pilih jika anda menyukai Nasi Goreng E", color: "rose" as const },
 ];
+
+const colorMap = {
+  violet: { text: "text-violet-600", bg: "bg-violet-50" },
+  sky: { text: "text-sky-600", bg: "bg-sky-50" },
+  emerald: { text: "text-emerald-600", bg: "bg-emerald-50" },
+  amber: { text: "text-amber-600", bg: "bg-amber-50" },
+  rose: { text: "text-rose-600", bg: "bg-rose-50" },
+} as const;
 
 export function VotingCard({
   className,
@@ -113,6 +121,7 @@ export function VotingCard({
               <div className="grid grid-cols-1 sm:grid-cols-5 gap-5 mb-8">
                 {votingOptions.map((option) => {
                   const isSelected = selected === option.id;
+                  const colors = colorMap[option.color];
                   return (
                     <button
                       key={option.id}
@@ -133,7 +142,7 @@ export function VotingCard({
                           "inline-flex items-center justify-center w-12 h-12 rounded-full text-base font-bold shrink-0 transition-colors duration-200",
                           isSelected
                             ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground",
+                            : `${colors.bg} ${colors.text}`,
                         )}
                       >
                         {option.id}
@@ -143,7 +152,7 @@ export function VotingCard({
                       <span
                         className={cn(
                           "text-base font-semibold leading-snug transition-colors duration-200",
-                          isSelected ? "text-primary" : "text-foreground",
+                          isSelected ? "text-primary" : colors.text,
                         )}
                       >
                         {option.title}
